@@ -1,0 +1,837 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --sidebar-w: 220px;
+  --panel-w: 300px;
+  --toolbar-h: 52px;
+  --bg-canvas: #f3f4f6;
+  --bg-sidebar: #111827;
+  --bg-panel: #ffffff;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #e5e7eb;
+  --accent: #6366f1;
+  --amber: #f59e0b;
+  --radius: 10px;
+  --shadow-node: 0 2px 12px rgba(0, 0, 0, 0.10);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+/* ─── Layout ─────────────────────────────────────────────── */
+.app-root {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.canvas-panel-row {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ─── Toolbar ───────────────────────────────────────────── */
+.toolbar {
+  height: var(--toolbar-h);
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.toolbar-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.toolbar-logo {
+  font-size: 20px;
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-layout {
+  background: #fff;
+  color: var(--text-primary);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-layout:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.btn-export {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.btn-export:hover {
+  background: #4f46e5;
+  transform: translateY(-1px);
+}
+
+.btn-export:active {
+  transform: translateY(0);
+}
+
+/* ─── Sidebar ──────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--bg-sidebar);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+.sidebar-header {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.logo-icon {
+  font-size: 20px;
+}
+
+.logo-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -.3px;
+}
+
+.sidebar-category {
+  padding: 16px 12px 8px;
+}
+
+.sidebar-category-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .7px;
+  color: #6b7280;
+  padding: 0 4px 10px;
+  text-transform: uppercase;
+}
+
+.sidebar-node-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 9px;
+  cursor: grab;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: background 0.15s, transform 0.12s;
+  user-select: none;
+}
+
+.sidebar-node-item:hover {
+  background: rgba(255, 255, 255, 0.10);
+  transform: translateX(2px);
+}
+
+.sidebar-node-item:active {
+  cursor: grabbing;
+}
+
+.sidebar-node-icon {
+  font-size: 17px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--node-color, #6366f1) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--node-color, #6366f1) 30%, transparent);
+  border-radius: 7px;
+  flex-shrink: 0;
+}
+
+.sidebar-node-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+.sidebar-drag-dots {
+  font-size: 15px;
+  color: #374151;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 11px;
+  color: #4b5563;
+}
+
+/* ─── Canvas ─────────────────────────────────────────────── */
+.canvas-wrapper {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-canvas);
+}
+
+/* ─── Start Node ─────────────────────────────────────────── */
+.node-start {
+  background: #fff;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px 40px;
+  box-shadow: var(--shadow-node);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.node-start.node-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.start-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -.2px;
+}
+
+/* ─── Node Cards ─────────────────────────────────────────── */
+.node-card {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: var(--shadow-node);
+  min-width: 230px;
+  max-width: 260px;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.node-card:hover {
+  border-color: #c7d2fe;
+}
+
+.node-card.node-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), var(--shadow-node);
+}
+
+.node-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 8px;
+  gap: 10px;
+}
+
+.node-header-left {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.node-icon-badge {
+  font-size: 16px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.node-icon-email {
+  background: #ede9fe;
+}
+
+.node-icon-push {
+  background: #cffafe;
+}
+
+.node-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.node-type-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+
+.node-menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: #9ca3af;
+  padding: 4px 6px;
+  border-radius: 6px;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+.node-menu-btn:hover {
+  background: #f3f4f6;
+  color: var(--text-primary);
+}
+
+.node-body {
+  padding: 0 12px 12px;
+}
+
+.node-cta-btn {
+  width: 100%;
+  padding: 8px 12px;
+  background: #fef9c3;
+  color: #92400e;
+  border: 1.5px solid #fde68a;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.node-cta-btn:hover {
+  background: #fef08a;
+  border-color: #fcd34d;
+}
+
+/* ─── Handles ────────────────────────────────────────────── */
+.handle-top,
+.handle-bottom {
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  border: 2px solid #fff !important;
+  background: var(--accent) !important;
+}
+
+/* ─── Edge + Button ─────────────────────────────────────── */
+.edge-add-btn {
+  width: 26px;
+  height: 26px;
+  background: #fff;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: background 0.17s, transform 0.12s;
+}
+
+.edge-add-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: scale(1.15);
+}
+
+/* ─── Config Panel ───────────────────────────────────────── */
+.config-panel {
+  width: var(--panel-w);
+  background: var(--bg-panel);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+.config-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  background: #fafafa;
+  flex-shrink: 0;
+}
+
+.config-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.config-icon {
+  font-size: 17px;
+}
+
+.config-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.config-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  color: #7c3aed;
+  background: #ede9fe;
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+
+.config-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.config-close:hover {
+  background: #f3f4f6;
+  color: var(--text-primary);
+}
+
+.config-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.config-field {
+  margin-bottom: 15px;
+}
+
+.config-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+
+.config-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  background: #fafafa;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  resize: none;
+}
+
+.config-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  background: #fff;
+}
+
+.config-textarea {
+  min-height: 90px;
+}
+
+.config-footer {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  background: #fafafa;
+  flex-shrink: 0;
+}
+
+.config-node-id {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+/* ─── Node Delete Button ─────────────────────────────────── */
+.node-delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: #d1d5db;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+.node-delete-btn:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+/* ─── End Node ───────────────────────────────────────────── */
+.node-end {
+  background: #fff;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px 40px;
+  box-shadow: var(--shadow-node);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.node-end.node-selected {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.end-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  letter-spacing: -.2px;
+}
+
+/* ─── Condition Node Extras ──────────────────────────────── */
+.node-icon-condition {
+  background: #fef3c7;
+}
+
+.node-cta-condition {
+  background: #fef3c7;
+  border-color: #fde68a;
+  color: #78350f;
+}
+
+.node-cta-condition:hover {
+  background: #fde68a;
+}
+
+.condition-handle-labels {
+  display: flex;
+  justify-content: space-around;
+  padding: 0 16px 10px;
+}
+
+.condition-label {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.condition-yes {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.condition-no {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.handle-yes {
+  background: #22c55e !important;
+}
+
+.handle-no {
+  background: #ef4444 !important;
+}
+
+/* ─── Config Logic Badge ─────────────────────────────────── */
+.config-badge-logic {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+/* ─── Condition Hint Badges ──────────────────────────────── */
+.config-hint-box {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.hint-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.hint-yes {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.hint-no {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ─── Config Select ──────────────────────────────────────── */
+.config-select {
+  cursor: pointer;
+}
+
+/* ─── Dynamic Node Accent ────────────────────────────────── */
+.node-card {
+  --node-accent: #6366f1;
+}
+
+.node-card.node-selected {
+  border-color: var(--node-accent, #6366f1);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--node-accent, #6366f1) 20%, transparent),
+    var(--shadow-node);
+}
+
+.node-card:hover {
+  border-color: color-mix(in srgb, var(--node-accent, #6366f1) 40%, #e5e7eb);
+}
+
+/* ─── Sidebar Category Dot ───────────────────────────────── */
+.sidebar-category-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.sidebar-category-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.sidebar-node-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-node-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+/* ─── Sidebar Node Badge ─────────────────────────────────── */
+.sidebar-node-badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  background: rgba(99, 102, 241, 0.25);
+  color: #c7d2fe;
+  border-radius: 4px;
+  padding: 1px 5px;
+  display: inline-block;
+  margin-top: 2px;
+}
+
+.sidebar-node-badge-adv {
+  background: rgba(255, 255, 255, 0.10);
+  color: #94a3b8;
+}
+
+/* ─── Toolbar Subtitle ───────────────────────────────────── */
+.toolbar-subtitle {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+  padding: 2px 8px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  letter-spacing: .3px;
+}
+
+.btn-load {
+  background: #fff;
+  color: var(--text-primary);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-load:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+/* ─── Config Panel — Dynamic Accent ─────────────────────── */
+.config-header {
+  border-left: 3px solid var(--panel-accent, #6366f1);
+}
+
+.config-badge-special {
+  border: 1px solid;
+  border-radius: 20px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+.config-code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.config-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.config-hint code {
+  background: #f3f4f6;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 11px;
+  color: #6366f1;
+}
+
+.config-node-type {
+  float: right;
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+/* ─── Code Editor Textarea ───────────────────────────────── */
+.config-code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace !important;
+  font-size: 12px !important;
+  background: #0f172a !important;
+  color: #94a3b8 !important;
+  border-color: #1e293b !important;
+  border-radius: 8px;
+  line-height: 1.7;
+  padding: 12px !important;
+}
+
+.config-code:focus {
+  background: #0f172a !important;
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18) !important;
+  color: #e2e8f0 !important;
+}
+
+/* ─── Mock Integration Badge ─────────────────────────────── */
+.config-mock-badge {
+  background: #fef9c3;
+  color: #78350f;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+/* ─── Logo Sub ───────────────────────────────────────────── */
+.sidebar-logo-sub {
+  font-size: 10px;
+  color: #4b5563;
+  margin-top: 3px;
+  letter-spacing: .5px;
+}
