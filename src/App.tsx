@@ -9,7 +9,7 @@ import type { NodeData } from './types';
 import './App.css';
 
 // AMS Pages & Layout
-import AmsLayout from './ams/layout/AmsLayout';
+import AmsLayout from './ams/components/layout/AmsLayout';
 import Dashboard from './ams/pages/Dashboard';
 import CasesList from './ams/pages/CasesList';
 import NewCase from './ams/pages/NewCase';

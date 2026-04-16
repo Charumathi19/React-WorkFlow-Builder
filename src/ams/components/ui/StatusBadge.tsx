@@ -1,4 +1,4 @@
-import type { CaseStatus, Verdict } from '../types';
+import type { CaseStatus, Verdict } from '../../types';
 
 type BadgeType = CaseStatus | Verdict | 'active' | 'inactive';
 

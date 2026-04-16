@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import {
     LayoutDashboard,
     FileSearch,
@@ -9,7 +9,7 @@ import {
     BarChart3,
     Shield,
 } from 'lucide-react';
-import '../ams.css';
+import '../../ams.css';
 
 const NAV_ITEMS = [
     { label: 'Dashboard', to: '/ams', icon: LayoutDashboard, end: true },
@@ -22,11 +22,8 @@ const NAV_ITEMS = [
 ];
 
 export default function AmsSidebar() {
-    const location = useLocation();
-
     return (
         <aside className="ams-sidebar">
-            {/* Logo */}
             <div className="ams-sidebar-logo">
                 <div className="ams-sidebar-logo-icon">
                     <Shield size={18} color="#fff" />
@@ -37,7 +34,6 @@ export default function AmsSidebar() {
                 </div>
             </div>
 
-            {/* Navigation */}
             <div className="ams-nav-section">
                 <div className="ams-nav-section-label">Navigation</div>
                 {NAV_ITEMS.map(({ label, to, icon: Icon, end }) => (
