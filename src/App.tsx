@@ -1,4 +1,5 @@
-import React, { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Sidebar from './components/sidebar/Sidebar';
 import WorkflowCanvas from './components/canvas/WorkflowCanvas';
 import ConfigPanel from './components/panel/ConfigPanel';
@@ -7,7 +8,19 @@ import type { Node } from '@xyflow/react';
 import type { NodeData } from './types';
 import './App.css';
 
-export default function App(): JSX.Element {
+// AMS Pages & Layout
+import AmsLayout from './ams/layout/AmsLayout';
+import Dashboard from './ams/pages/Dashboard';
+import CasesList from './ams/pages/CasesList';
+import NewCase from './ams/pages/NewCase';
+import CaseDetail from './ams/pages/CaseDetail';
+import DomainManagement from './ams/pages/DomainManagement';
+import KeywordManagement from './ams/pages/KeywordManagement';
+import AuditLog from './ams/pages/AuditLog';
+import Analytics from './ams/pages/Analytics';
+
+// ─── Workflow Builder page ────────────────────────────────────────────────────
+function WorkflowBuilder() {
   const [selectedNode, setSelectedNode] = useState<Node<NodeData> | null>(null);
   const canvasRef = useRef<CanvasRef>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -44,7 +57,7 @@ export default function App(): JSX.Element {
 
   return (
     <div className="app-root">
-      <Sidebar />
+      <SidebarWithScreeningLink />
       <div className="main-area">
         <div className="toolbar">
           <div className="toolbar-title">
@@ -78,3 +91,69 @@ export default function App(): JSX.Element {
     </div>
   );
 }
+
+// ─── Workflow sidebar enriched with AMS link ──────────────────────────────────
+function SidebarWithScreeningLink() {
+  const location = useLocation();
+  const isAms = location.pathname.startsWith('/ams');
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', position: 'relative' }}>
+      <Sidebar />
+      {/* Screening platform shortcut pinned at bottom of existing sidebar */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 64,
+          left: 0,
+          right: 0,
+          padding: '0 10px',
+        }}
+      >
+        <Link
+          to="/ams"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            padding: '9px 10px',
+            borderRadius: 7,
+            fontSize: 13,
+            fontWeight: 600,
+            textDecoration: 'none',
+            background: isAms ? 'rgba(232,83,10,0.15)' : 'rgba(232,83,10,0.08)',
+            color: isAms ? '#e8530a' : '#cc4a08',
+            border: '1px solid rgba(232,83,10,0.25)',
+            transition: 'background 0.15s',
+          }}
+        >
+          🛡️ Screening Platform
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// ─── App (Router root) ────────────────────────────────────────────────────────
+const App = () => (
+  <BrowserRouter>
+    <Routes>
+      {/* Workflow Builder */}
+      <Route path="/" element={<WorkflowBuilder />} />
+
+      {/* Adverse Media Screening Platform */}
+      <Route path="/ams" element={<AmsLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="cases" element={<CasesList />} />
+        <Route path="cases/new" element={<NewCase />} />
+        <Route path="cases/:id" element={<CaseDetail />} />
+        <Route path="domains" element={<DomainManagement />} />
+        <Route path="keywords" element={<KeywordManagement />} />
+        <Route path="audit" element={<AuditLog />} />
+        <Route path="analytics" element={<Analytics />} />
+      </Route>
+    </Routes>
+  </BrowserRouter>
+);
+
+export default App;
